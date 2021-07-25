@@ -6,6 +6,7 @@ class UTFEED_Widgets extends WP_Widget {
 		parent::__construct($name, $title, $parameters);
 		$this->defaultValues['title'] = UTFEED_PLUGIN_TITLE;
 		$this->defaultValues['handle'] = 'TwitterDev';
+		$this->defaultValues['actual_handle'] = 'TwitterDev';
 		$this->defaultValues['feed_lang'] = '';
 		$this->defaultValues['feed_width'] = 350;
 		$this->defaultValues['feed_height'] = 600;
@@ -35,6 +36,7 @@ class UTFEED_Widgets extends WP_Widget {
 		$twitter->height = $i['feed_height'];
 		$twitter->theme = $i['feed_theme'];
 		$twitter->handle = $i['handle'];
+		$twitter->actual_handle = $i['actual_handle'];
 		$twitter->feed_type = $i['feed_type'];
 		$twitter->tracking = $i['feed_track'];
 		$twitter->feed_lang = $i['feed_lang'];
@@ -50,13 +52,22 @@ class UTFEED_Widgets extends WP_Widget {
 		$i = [];
 		$i['title'] = $this->CleanValue( $ni['title'] );
 		$i['feed_type'] = $this->CleanValue( $ni['feed_type'] );
-		$i['handle'] = $this->CleanValue( $ni['handle'] );
+		$i['handle'] =  $this->CleanValue( $ni['handle'] );
+		$i['actual_handle'] =  $this->CleanHandle( $i['handle'], $i['feed_type'] );
 		$i['feed_lang'] = $this->CleanValue( $ni['feed_lang'] );
 		$i['feed_width'] = $this->CleanValue( $ni['feed_width'] );
 		$i['feed_height'] = $this->CleanValue( $ni['feed_height'] );
 		$i['feed_theme'] = $this->CleanValue( $ni['feed_theme'] );
 		$i['feed_track'] = $this->CleanValue( $ni['feed_track'] );
 		return $i;
+	}
+	
+	private function CleanHandle($handle, $type){
+		$twitter = new UTFEED_Twitter();
+		$twitter->handle = $handle;
+		$twitter->feed_type = $type;
+		$twitter->cleanTwitterHandle();
+		return $twitter->actual_handle;
 	}
 	
 	protected function GetInstanceValues( $i ) {

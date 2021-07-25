@@ -36,6 +36,9 @@ class utfeed_widget extends UTFEED_Widgets {
 			<input class="widefat" id="<?php echo $this->get_field_id( 'handle' ); ?>" name="<?php echo $this->get_field_name( 'handle' ); ?>" type="text" value="<?php echo esc_attr( $handle ); ?>" />
 		</p>
 		<p>
+			<input type="hidden" id="<?php echo $this->get_field_id( 'actual_handle' ); ?>" name="<?php echo $this->get_field_name( 'actual_handle' ); ?>" value="<?php echo esc_attr( $actual_handle ); ?>" />
+		</p>
+		<p>
 			<label for="<?php echo $this->get_field_id('feed_width'); ?>">
 				<?php _e( 'Width:', UTFEED_PLUGIN_DOMAIN ); ?>
 			</label>
@@ -46,7 +49,7 @@ class utfeed_widget extends UTFEED_Widgets {
 				<?php _e('Height:'); ?>
 			</label>
 			<input id="<?php echo $this->get_field_id('feed_height'); ?>" name="<?php echo $this->get_field_name('feed_height'); ?>" type="number" value="<?php echo esc_attr($feed_height); ?>" />
-			<a title="Height will not work for Single Tweet!" href="javascript:void(0);">Note</a>
+			<font size="2px"><?php _e( 'Height will not work for Single Tweet!', UTFEED_PLUGIN_DOMAIN ); ?></font>
 		</p>
 		<p>
 			<label for="<?php echo $this->get_field_id('feed_lang'); ?>">

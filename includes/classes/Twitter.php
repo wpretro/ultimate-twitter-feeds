@@ -5,6 +5,7 @@ class UTFEED_Twitter {
 	public $height;
 	public $theme;
 	public $handle;
+	public $actual_handle;
 	public $feed_type;
 	public $feed_lang;
 	public $tracking;
@@ -67,24 +68,25 @@ class UTFEED_Twitter {
 		$theme = isset($this->theme) ? $this->theme : 'dark';
 		$track = isset($this->tracking) ? $this->tracking : 'n';
 		$feed_lang = isset($this->feed_lang) ? $this->feed_lang : 'en';
+		$actual_handle = isset($this->actual_handle) ? $this->actual_handle : $this->handle;
 		$tag = 'a';
 		$content = $href = "";
 		$class = 'twitter-timeline';
 		
 		switch ($this->feed_type) {
 			case "profile":
-				$href = "https://twitter.com/".$this->handle;
+				$href = $this->actual_handle;
 				$content = __(UTFEED_PLUGIN_TWITTER_IS_LOADING, UTFEED_PLUGIN_DOMAIN);
 				break;
 			case "list":
-				$href = $this->handle;
+				$href = $this->actual_handle;
 				$content = __(UTFEED_PLUGIN_TWITTER_IS_LOADING, UTFEED_PLUGIN_DOMAIN);
 				break;
 			case "single_tweet":
 				$tag = 'blockquote';
 				$class = 'twitter-tweet';
 				$href = '';
-				$content = "<p lang='en' dir='ltr'><a href='".$this->handle."'>".__(UTFEED_PLUGIN_TWITTER_IS_LOADING, UTFEED_PLUGIN_DOMAIN)."</a></p>";
+				$content = "<p lang='en' dir='ltr'><a href='".$this->actual_handle."'>".__(UTFEED_PLUGIN_TWITTER_IS_LOADING, UTFEED_PLUGIN_DOMAIN)."</a></p>";
 				break;	
 		}
 		
@@ -92,5 +94,41 @@ class UTFEED_Twitter {
 		
 		$html .= '<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>';
 		return $html;
+	}
+	
+	public function cleanTwitterHandle(){
+		if(empty($this->handle)){
+			return '';
+		}
+		$this->handle = parse_url($this->handle, PHP_URL_PATH);
+		$this->handle = ltrim($this->handle, '/');
+		$this->handle = ltrim($this->handle, '@');
+		switch($this->feed_type) {
+			case 'list':
+				$this->actual_handle = $this->getJsonFromTwitter(UTFEED_PLUGIN_TWITTER_URL.$this->handle);
+				break;
+			case 'profile':
+				$this->actual_handle = UTFEED_PLUGIN_TWITTER_URL.$this->handle;
+				break;
+			case 'single_tweet':
+				$this->actual_handle = UTFEED_PLUGIN_TWITTER_URL.$this->handle;
+				break;
+		}
+	}
+	private function getJsonFromTwitter($url) {
+		try {
+			$result = file_get_contents('https://publish.twitter.com/oembed?url='.$url);
+		}
+		catch(\Exception $ex){
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_URL, $url);
+			$result = curl_exec($ch);
+			curl_close($ch);
+		}
+		
+		$obj = json_decode($result);
+		return $obj->url;
 	}
 }
