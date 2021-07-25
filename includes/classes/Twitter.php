@@ -116,8 +116,9 @@ class UTFEED_Twitter {
 		}
 	}
 	private function getJsonFromTwitter($url) {
+		$url = 'https://publish.twitter.com/oembed?url='.$url;
 		try {
-			$result = file_get_contents('https://publish.twitter.com/oembed?url='.$url);
+			$result = file_get_contents($url);
 		}
 		catch(\Exception $ex){
 			$ch = curl_init();
