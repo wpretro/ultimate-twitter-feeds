@@ -2,11 +2,11 @@
 /*
    Plugin Name: Ultimate Twitter Feeds
    Plugin URI: http://ultimatetwitterfeeds.github.io
-   description: >_ An <strong>Ultimate Plugin</strong> to display Twitter Feeds on your website. _<
+   description: An <strong>Ultimate Plugin</strong> to display Twitter Feeds on your website.
    Version: 0.1
    Author: Ultimate Twitter Feeds Devs
    Author URI: http://ultimatetwitterfeeds.github.io
-   License: GPL2
+   License: GPLv2 or later
 */
 
 require_once( 'functions.php');

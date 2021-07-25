@@ -12,9 +12,8 @@ class UTFEED_Twitter {
 	public static function getTwitterFeedTypes(){
 		return [
 			['profile','Profile'],
-			['timeline','Timeline'],
-			['other','Other'],
-			['hashtag','HashTag']
+			['list','List'],
+			['single_tweet','Single Tweet']
 		];
 	}
 	
