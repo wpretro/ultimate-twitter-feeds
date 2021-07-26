@@ -1,6 +1,7 @@
 <?php
-class UTFEED_Twitter {
-	
+class UTFEED_Twitter
+{
+
 	public $width;
 	public $height;
 	public $theme;
@@ -9,16 +10,18 @@ class UTFEED_Twitter {
 	public $feed_type;
 	public $feed_lang;
 	public $tracking;
-	
-	public static function getTwitterFeedTypes(){
+
+	public static function getTwitterFeedTypes()
+	{
 		return [
-			['profile','Profile'],
-			['list','List'],
-			['single_tweet','Single Tweet']
+			['profile', 'Profile'],
+			['list', 'List'],
+			['single_tweet', 'Single Tweet']
 		];
 	}
-	
-	public static function getTwitterFeedLangs(){
+
+	public static function getTwitterFeedLangs()
+	{
 		return [
 			['', 'Automatic'],
 			['en', 'English'],
@@ -57,12 +60,13 @@ class UTFEED_Twitter {
 			['vi', 'Vietnamese']
 		];
 	}
-	
-	public function getTwitterHtml(){
-		if( empty($this->handle) || empty($this->feed_type) ) {
+
+	public function getTwitterHtml()
+	{
+		if (empty($this->handle) || empty($this->feed_type)) {
 			return '';
 		}
-		
+
 		$width = isset($this->width) ? $this->width : 400;
 		$height = isset($this->height) ? $this->height : 600;
 		$theme = isset($this->theme) ? $this->theme : 'dark';
@@ -72,7 +76,7 @@ class UTFEED_Twitter {
 		$tag = 'a';
 		$content = $href = "";
 		$class = 'twitter-timeline';
-		
+
 		switch ($this->feed_type) {
 			case "profile":
 				$href = $this->actual_handle;
@@ -86,49 +90,51 @@ class UTFEED_Twitter {
 				$tag = 'blockquote';
 				$class = 'twitter-tweet';
 				$href = '';
-				$content = "<p lang='en' dir='ltr'><a href='".$this->actual_handle."'>".__(UTFEED_PLUGIN_TWITTER_IS_LOADING, UTFEED_PLUGIN_DOMAIN)."</a></p>";
-				break;	
+				$content = "<p lang='en' dir='ltr'><a href='" . esc_attr($this->actual_handle) . "'>" . __(UTFEED_PLUGIN_TWITTER_IS_LOADING, UTFEED_PLUGIN_DOMAIN) . "</a></p>";
+				break;
 		}
-		
+
 		$html = sprintf("<%s class='%s' data-lang='%s' data-width='%d' data-height='%d' data-dnt='%s' data-theme='%s' href='%s'>%s</%s>", $tag, $class, $feed_lang, $width, $height, $track, $theme, $href, $content, $tag);
-		
+
 		$html .= '<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>';
 		return $html;
 	}
-	
-	public function cleanTwitterHandle(){
-		if(empty($this->handle)){
+
+	public function cleanTwitterHandle()
+	{
+		if (empty($this->handle)) {
 			return '';
 		}
 		$this->handle = parse_url($this->handle, PHP_URL_PATH);
 		$this->handle = ltrim($this->handle, '/');
 		$this->handle = ltrim($this->handle, '@');
-		switch($this->feed_type) {
+		switch ($this->feed_type) {
 			case 'list':
-				$this->actual_handle = $this->getJsonFromTwitter(UTFEED_PLUGIN_TWITTER_URL.$this->handle);
+				$this->actual_handle = $this->getJsonFromTwitter(UTFEED_PLUGIN_TWITTER_URL . $this->handle);
 				break;
 			case 'profile':
-				$this->actual_handle = UTFEED_PLUGIN_TWITTER_URL.$this->handle;
+				$this->actual_handle = UTFEED_PLUGIN_TWITTER_URL . $this->handle;
 				break;
 			case 'single_tweet':
-				$this->actual_handle = UTFEED_PLUGIN_TWITTER_URL.$this->handle;
+				$this->actual_handle = UTFEED_PLUGIN_TWITTER_URL . $this->handle;
 				break;
 		}
 	}
-	private function getJsonFromTwitter($url) {
-		$url = 'https://publish.twitter.com/oembed?url='.$url;
+	private function getJsonFromTwitter($url)
+	{
+		$url = 'https://publish.twitter.com/oembed?url=' . $url;
 		try {
-			$result = file_get_contents($url);
+			$contextOptions = array(
+				"ssl" => array(
+					"verify_peer" => false,
+					"verify_peer_name" => false,
+				),
+			);
+			$result = file_get_contents($url, false, stream_context_create($contextOptions));
+		} catch (\Exception $ex) {
+			$response 	= wp_remote_get($url, array('sslverify' => FALSE));
+			$result     = wp_remote_retrieve_body($response);
 		}
-		catch(\Exception $ex){
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_URL, $url);
-			$result = curl_exec($ch);
-			curl_close($ch);
-		}
-		
 		$obj = json_decode($result);
 		return $obj->url;
 	}
