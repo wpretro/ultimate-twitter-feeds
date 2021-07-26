@@ -123,19 +123,15 @@ class UTFEED_Twitter
 	private function getJsonFromTwitter($url)
 	{
 		$url = 'https://publish.twitter.com/oembed?url=' . $url;
-		try {
-			$contextOptions = array(
-				"ssl" => array(
-					"verify_peer" => false,
-					"verify_peer_name" => false,
-				),
-			);
-			$result = file_get_contents($url, false, stream_context_create($contextOptions));
-		} catch (\Exception $ex) {
-			$response 	= wp_remote_get($url, array('sslverify' => FALSE));
-			$result     = wp_remote_retrieve_body($response);
+		$response 	= wp_remote_get($url, array('sslverify' => FALSE));
+		$result     = wp_remote_retrieve_body($response);
+		$status		= $response['response']['code'];
+		if($status === 200){
+			$obj = json_decode($result);
+			return $obj->url;
 		}
-		$obj = json_decode($result);
-		return $obj->url;
+		else {
+			return $url;
+		}
 	}
 }
