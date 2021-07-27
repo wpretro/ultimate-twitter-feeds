@@ -22,7 +22,7 @@ class UTFEED_Widgets extends WP_Widget {
 			$title = $args['before_title'] . $title . $args['after_title'];
 		}
 		else {
-			$title = __(UTFEED_PLUGIN_TITLE, UTFEED_PLUGIN_DOMAIN );	
+			$title = __(UTFEED_PLUGIN_TITLE, 'ultimate-twitter-feeds' );	
 		}
 		
 		$title .= $args['after_widget'];

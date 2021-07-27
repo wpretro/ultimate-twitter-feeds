@@ -80,17 +80,17 @@ class UTFEED_Twitter
 		switch ($this->feed_type) {
 			case "profile":
 				$href = $this->actual_handle;
-				$content = __(UTFEED_PLUGIN_TWITTER_IS_LOADING, UTFEED_PLUGIN_DOMAIN);
+				$content = __(UTFEED_PLUGIN_TWITTER_IS_LOADING, 'ultimate-twitter-feeds');
 				break;
 			case "list":
 				$href = $this->actual_handle;
-				$content = __(UTFEED_PLUGIN_TWITTER_IS_LOADING, UTFEED_PLUGIN_DOMAIN);
+				$content = __(UTFEED_PLUGIN_TWITTER_IS_LOADING, 'ultimate-twitter-feeds');
 				break;
 			case "single_tweet":
 				$tag = 'blockquote';
 				$class = 'twitter-tweet';
 				$href = '';
-				$content = "<p lang='en' dir='ltr'><a href='" . esc_attr($this->actual_handle) . "'>" . __(UTFEED_PLUGIN_TWITTER_IS_LOADING, UTFEED_PLUGIN_DOMAIN) . "</a></p>";
+				$content = "<p lang='en' dir='ltr'><a href='" . esc_attr($this->actual_handle) . "'>" . __(UTFEED_PLUGIN_TWITTER_IS_LOADING, 'ultimate-twitter-feeds') . "</a></p>";
 				break;
 		}
 
