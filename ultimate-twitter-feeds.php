@@ -11,6 +11,7 @@
 
 require_once('functions.php');
 require_once('constants.php');
+require_once(UTFEED_PLUGIN_CLASSES . 'Review.php');
 require_once(UTFEED_PLUGIN_CLASSES . 'Utfeed.php');
 require_once(UTFEED_PLUGIN_CLASSES . 'Widget.php');
 require_once(UTFEED_PLUGIN_CLASSES . 'Twitter.php');

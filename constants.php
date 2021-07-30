@@ -1,4 +1,9 @@
 <?php
+	define( 'UTFEED_PLUGIN_URL' , plugin_dir_url( __FILE__ ) );
+	define( 'UTFEED_PLUGIN_INCLUDE_URL' , UTFEED_PLUGIN_URL.'includes/' );
+	define( 'UTFEED_PLUGIN_ASSETS_URL' , UTFEED_PLUGIN_INCLUDE_URL.'assets/' );
+	define( 'UTFEED_PLUGIN_CSS_URL' , UTFEED_PLUGIN_ASSETS_URL.'css/' );
+	
 	define( 'UTFEED_PLUGIN_ROOT' , dirname(__FILE__) );
 	define( 'UTFEED_PLUGIN_INCLUDE', UTFEED_PLUGIN_ROOT.'/includes/' );
 	define( 'UTFEED_PLUGIN_CLASSES', UTFEED_PLUGIN_INCLUDE.'/classes/' );
