@@ -13,3 +13,7 @@
 	define( 'UTFEED_PLUGIN_TWITTER_IS_LOADING', 'A Twitter List Loading...' );
 	
 	define( 'UTFEED_PLUGIN_TWITTER_URL', 'https://www.twitter.com/' );
+	
+	define( 'UTFEED_PLUGIN_SHORTCODE', 'UTFEED_TWITTER_FEED' );
+	define( 'UTFEED_PLUGIN_SETTINGS_OPTION', 'utfeed_options' );
+	define( 'UTFEED_PLUGIN_SETTINGS_OPTION_GRP', 'utfeed_option_group' );

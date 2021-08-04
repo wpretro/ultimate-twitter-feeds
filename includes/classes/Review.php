@@ -1,15 +1,13 @@
 <?php
 /**
- * Add Review class.
+ * Review class.
  * Ask users to give a review of the plugin on WordPress.org.
  *
  * @package   Ultimate Twitter Feeds
- 
  * @license   http://opensource.org/licenses/gpl-2.0.php GNU Public License
  */
 
-if ( ! class_exists( 'UTFEED_Review' ) ) :
-	
+if ( ! class_exists( 'UTFEED_Review' ) ) {
 	class UTFEED_Review {
 
 		private $slug;
@@ -18,29 +16,39 @@ if ( ! class_exists( 'UTFEED_Review' ) ) :
 		public $date_option;
 		private $time_limit;
 
-		public function __construct( $args ) {
-
+		public function __construct() {
+			$arguments = func_get_args();
+			$this->UTFEED_Review([
+				'slug'       => $arguments[0]['slug'] ?? 'ultimate-twitter-feeds',
+				'name'       => $arguments[0]['name'] ?? __( UTFEED_PLUGIN_TITLE, 'ultimate-twitter-feeds' ),
+				'time_limit' => $arguments[0]['time_limit'] ?? WEEK_IN_SECONDS,
+				//'time_limit' => MINUTE_IN_SECONDS // Uncomment this for testing
+			]);
+		}
+		
+		public function UTFEED_Review( $args ) {
 			$this->slug         = $args['slug'];
 			$this->name         = $args['name'];
 			$this->nobug_option = $this->slug . '_no_bug';
 			$this->date_option  = 'ultimate-twitter-feeds-activation-date';
-
+			
 			if ( isset( $args['time_limit'] ) ) {
 				$this->time_limit = $args['time_limit'];
 			} else {
 				$this->time_limit = WEEK_IN_SECONDS;
 			}
-
-			add_action( 'admin_init', array( $this, 'showReviewNotice' ) );
-			add_action( 'admin_init', array( $this, 'setNoBug' ), 5 );
-			add_action( 'admin_head', array( $this, 'adminAssets' ) );
 		}
-
+		
 		public function adminAssets() {
 			wp_enqueue_style( 'add-review-style', UTFEED_PLUGIN_CSS_URL.'review.css', array(), '1.0' );
 		}
-
-		public function calculateTime( $seconds ) {
+		
+		public function timeFromNow(){
+			$seconds = time() - get_site_option( $this->date_option );
+			return $this->calculateTime($seconds);
+		}
+		
+		private function calculateTime( $seconds ) {
 			$years = ( intval( $seconds ) / YEAR_IN_SECONDS ) % 100;
 			if ( $years > 0 ) {
 				return sprintf( _n( 'a year', '%s years', $years, 'ultimate-twitter-feeds' ), $years );
@@ -76,7 +84,7 @@ if ( ! class_exists( 'UTFEED_Review' ) ) :
 		public function showReview() {
 			$scriptname	=	explode('/',$_SERVER['SCRIPT_NAME']);
 			$no_bug_url =	wp_nonce_url( admin_url( end($scriptname).'?' . $this->nobug_option . '=true' ), 'ultimate-twitter-feeds-notification-nounce' );
-			$time 		=	$this->calculateTime( time() - get_site_option( $this->date_option ) );
+			$time 		=	$this->timeFromNow();
 			?>
 			<div class="notice updated ultimate-twitter-feeds-notice">
 				<div class="ultimate-twitter-feeds-notice-inner">
@@ -107,16 +115,4 @@ if ( ! class_exists( 'UTFEED_Review' ) ) :
 			add_site_option( $this->nobug_option, true );
 		}
 	}
-endif;
-
-/*
-* Instantiate the UTFEED_Review class.
-*/
-new UTFEED_Review (
-	array(
-		'slug'       => 'ultimate-twitter-feeds',
-		'name'       => __( UTFEED_PLUGIN_TITLE, 'ultimate-twitter-feeds' ),
-		'time_limit' => WEEK_IN_SECONDS,
-		// 'time_limit' => MINUTE_IN_SECONDS // Uncomment this for testing
-	)
-);
+}

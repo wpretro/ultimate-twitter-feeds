@@ -1,6 +1,6 @@
 <?php
 	function utfeed_load_widget() {
-		register_widget( 'utfeed_widget' );
+		register_widget( 'UTFEED_Widget' );
 	}
 	
 	function utfeed_pre($obj){
